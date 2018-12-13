@@ -21,7 +21,7 @@ class Checker {
        }
     }
  
-    boolean checkUrl (String listName, String url) {  
+    boolean checkUrl (String listName, String url) throws IOException{  
        File file = new File("./", listName + ".txt");
        BufferedReader reader = new BufferedReader(new FileReader(file));
        String line;
