@@ -4,25 +4,24 @@ class Checker {
     public void verify (String url) {
        FileManager fileManager = new FileManager();
        try{
-          fileManager.checkFiles("whitelist", "blacklist");
+            String output;
+            fileManager.checkFiles("whitelist", "blacklist");
+
+            if (checkUrl("whitelist", url)) {
+                output = "safe";
+            } else if (checkUrl("blacklist", url)) {
+                output = "unsafe";
+            } else {
+                output = "Unknown url";
+            }
+   
+            System.out.println(output);
        } catch(IOException e){
           System.out.println(e);
        }
-       String output;
-       
-       System.out.println(url);
-       if (checkList("whitelist", url)) {
-          output = "safe";
-       } else if (checkList("blacklist", url)) {
-          output = "unsafe";
-       } else {
-          output = "Unknown url";
-       }
- 
-       System.out.println(output);
     }
  
-    static boolean checkList (String listName, String url) {  
+    boolean checkUrl (String listName, String url) {  
        File file = new File("./", listName + ".txt");
        BufferedReader reader = new BufferedReader(new FileReader(file));
        String line;

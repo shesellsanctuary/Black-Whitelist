@@ -1,21 +1,18 @@
 import java.io.*;
 
 class FileManager {
-    public static void main(String[] args) { 
-        
-      }
 
     public void checkFiles (String whiteFileName, String blackFileName) throws IOException{
         File whitelist = new File("./", whiteFileName + ".txt");
         File blacklist = new File("./", blackFileName + ".txt");
         if(!whitelist.exists()){
             if(!whitelist.createNewFile()){
-                throw new IOException("Error creating new file: " + file.getAbsolutePath());
+                throw new IOException("Error creating new file: " + whitelist.getAbsolutePath());
             }
         } 
         if(!blacklist.exists()) {
             if(!blacklist.createNewFile()) {
-                throw new IOException("Error creating new file: " + file.getAbsolutePath());
+                throw new IOException("Error creating new file: " + blacklist.getAbsolutePath());
             }
         }
     }
