@@ -7,9 +7,8 @@ class UrlListProject {
 }
 
 class Interpreter {
-   static void interpret (String[] args) {
+   public void interpret (String[] args) {
       String command;
-
       if (args.length == 2){
          command = args[0];
          String url = args[1];
@@ -38,39 +37,8 @@ class Interpreter {
 
    static boolean isValidUrl (String url) {
       String urlRegex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
-
       return (url.matches(urlRegex));
    }
 }
-class Checker {
-   static void verify (String url) {
-      char output;
-      
-      System.out.println(url);
-      if (checklist("whitelist", url)) {
-         output = "safe";
-      } else if (checklist("blacklist", url)) {
-         output = "unsafe";
-      } else {
-         output = "Unknown url";
-      }
 
-      System.out.println(output);
-   }
-
-   // static boolean checkList (String listName, String url) {
-   //    if (listName != "whitelist" && listName !="blacklist"){
-   //       System.out.println("Invalid list name");
-   //    }else{
-   //       BufferedReader reader = new BufferedReader(new FileReader("./"+ listName + ".txt"));
-   //       String line;
-   //       while ((line = br.readLine()) != null) {
-   //          if (line == url){
-   //             return true;
-   //          }
-   //       }
-   //       return false;
-   //    }
-   // } 
-}
 
