@@ -1,7 +1,5 @@
 import java.io.*;
-
-import jdk.nashorn.internal.runtime.regexp.RegExpResult;
-
+import java.util.Scanner;
 class FileManager {
 
     public void checkFiles (String... files) throws IOException{
@@ -43,18 +41,25 @@ class FileManager {
     public void removeFromList (String listName, String url) {
         try{
             File file = checkFile(listName);
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            File temp = File.createTempFile("tempFile", ".txt", file.getParentFile());
+            String charset = "UTF-8";
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
             String line;
+            boolean found = false;
             while ((line = reader.readLine()) != null) {
-               if (line == url) {
-                    line.replace(url, "");
-                    reader.close();
+                    line = line.replace(url, "");
+                    writer.println(line);
                     System.out.println("Url removed from " + listName + ".");
-               }
+                    found = true;
             }
-            System.out.println("Url not in list to be removed.");
+            if(!found) {
+                System.out.println("Url not in list to be removed.");
+            }
             reader.close();
-
+            writer.close();
+            file.delete();
+            temp.renameTo(file);
         }catch(IOException e){
             System.out.println(e);
         }
@@ -74,24 +79,41 @@ class FileManager {
     }
 
     private boolean isInFile (String fileName, String url) {
-        try{
+        try {
             File file = checkFile(fileName);
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.printf("line= ",line);
-                if (line == url) {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                System.out.printf("\nlinha: ", line);
+                if(line == url) { 
                     System.out.println("Url is already on " + fileName + ".");
-                    reader.close();
+                    scanner.close();
                     return true;
                 }
             }
-            reader.close();
+            scanner.close();
             return false;
-        }catch(IOException e){
-            System.out.println(e);
+        } catch(IOException e) { 
+            e.printStackTrace();
             return true;
         }
-        
+        // try{
+        //     File file = checkFile(fileName);
+        //     BufferedReader reader = new BufferedReader(new FileReader(file));
+        //     String line;
+        //     while ((line = reader.readLine()) != null) {
+        //         System.out.printf("line= ",line);
+        //         if (line == url) {
+        //             System.out.println("Url is already on " + fileName + ".");
+        //             reader.close();
+        //             return true;
+        //         }
+        //     }
+        //     reader.close();
+        //     return false;
+        // }catch(IOException e){
+        //     System.out.println(e);
+        //     return true;
+        // }
     }
 }
