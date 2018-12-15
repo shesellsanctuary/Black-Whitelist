@@ -24,6 +24,7 @@ class FileManager {
     }
 
     public void addToList (String listName, String url) {
+        ensureUniqueness(listName, url);
         if (isInFile(listName, url) == false){
             try{
                 FileWriter file = new FileWriter(listName + ".txt", true);
@@ -35,33 +36,36 @@ class FileManager {
             }catch(IOException e){
                 System.out.println(e);
             }
+        } else {
+            System.out.println("Url is already on " + listName + ".");
         }
     }
 
     public void removeFromList (String listName, String url) {
-        try{
-            File file = checkFile(listName);
-            File temp = File.createTempFile("tempFile", ".txt", file.getParentFile());
-            String charset = "UTF-8";
-            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
-            String line;
-            boolean found = false;
-            while ((line = reader.readLine()) != null) {
-                    line = line.replace(url, "");
-                    writer.println(line);
-                    System.out.println("Url removed from " + listName + ".");
-                    found = true;
+        if(isInFile(listName, url)){
+            try{
+                File file = checkFile(listName);
+                File temp = File.createTempFile("tempFile", ".txt", file.getParentFile());
+                String charset = "UTF-8";
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
+                String line;
+                boolean found = false;
+                while ((line = reader.readLine()) != null) {
+                        line = line.replace(url, "");
+                        writer.println(line);
+                        found = true;
+                }
+                System.out.println("Url removed from " + listName + ".");
+                reader.close();
+                writer.close();
+                file.delete();
+                temp.renameTo(file);
+            }catch(IOException e){
+                System.out.println(e);
             }
-            if(!found) {
-                System.out.println("Url not in list to be removed.");
-            }
-            reader.close();
-            writer.close();
-            file.delete();
-            temp.renameTo(file);
-        }catch(IOException e){
-            System.out.println(e);
+        } else {
+            System.out.println("Url not in "+listName+" to be removed.");
         }
     }
 
@@ -78,15 +82,13 @@ class FileManager {
         }
     }
 
-    private boolean isInFile (String fileName, String url) {
+    public boolean isInFile (String fileName, String url) {
         try {
             File file = checkFile(fileName);
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                System.out.printf("\nlinha: ", line);
-                if(line == url) { 
-                    System.out.println("Url is already on " + fileName + ".");
+                if(line.equals(url)) { 
                     scanner.close();
                     return true;
                 }
@@ -97,23 +99,22 @@ class FileManager {
             e.printStackTrace();
             return true;
         }
-        // try{
-        //     File file = checkFile(fileName);
-        //     BufferedReader reader = new BufferedReader(new FileReader(file));
-        //     String line;
-        //     while ((line = reader.readLine()) != null) {
-        //         System.out.printf("line= ",line);
-        //         if (line == url) {
-        //             System.out.println("Url is already on " + fileName + ".");
-        //             reader.close();
-        //             return true;
-        //         }
-        //     }
-        //     reader.close();
-        //     return false;
-        // }catch(IOException e){
-        //     System.out.println(e);
-        //     return true;
-        // }
+    }
+
+    private void ensureUniqueness (String listName, String url) {
+        String whitelist = "whitelist";
+        String blacklist = "blacklist";
+        
+        if(listName.equals(whitelist)){
+            if(isInFile(blacklist, url)){
+                System.out.println("Removing from " + blacklist + " first.");
+                removeFromList(blacklist, url);
+            }
+        } else if(listName.equals(blacklist)){
+            if(isInFile(whitelist, url)){
+                System.out.println("Removing from " + whitelist + " first.");
+                removeFromList(whitelist, url);
+            }
+        }
     }
 }
