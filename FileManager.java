@@ -50,11 +50,11 @@ class FileManager {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(temp), charset));
                 String line;
-                boolean found = false;
                 while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (!line.isEmpty()) {
                         line = line.replace(url, "");
-                        writer.println(line);
-                        found = true;
+                        writer.println(line);                    }
                 }
                 System.out.println("Url removed from " + listName + ".");
                 reader.close();

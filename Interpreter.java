@@ -49,7 +49,7 @@ class Interpreter {
    }
 
    private boolean isValidUrl(String url) {
-      String urlRegex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+      String urlRegex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](.com|.br)";
       return (url.matches(urlRegex));
    }
 }
